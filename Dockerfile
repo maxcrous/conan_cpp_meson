@@ -1,10 +1,12 @@
 FROM ubuntu:20.04
 
+
 RUN set -ex && \
     apt-get update && \
     apt-get install -y \
     python3 pip sudo git 
 
+# Makes debconf install without displaying an interactive menu
 ARG DEBIAN_FRONTEND=noninteractive
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
