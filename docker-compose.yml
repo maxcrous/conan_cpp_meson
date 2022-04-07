@@ -1,0 +1,51 @@
+#Docker-compose is a tool to automate command line Docker
+# commands to build an image and launch a container.
+#
+# Most flags here relate to XWindows and are used to display the
+# containers GUI processes to the host's OS. That is, show the user
+# the graphical application that is running in the container.
+
+version: "3"
+
+services:
+  app:
+
+    # Names the Docker image
+    image: conan_cpp:latest
+
+    # Finds the Dockerfile in the current directory
+    build: .
+
+    # Forward host environment variables to the Docker build process
+    environment:
+
+      # Forward XWindows display env variable. A kind of host's display IP address.
+      - DISPLAY=host.docker.internal:0
+
+    # Mount host files in the Docker container
+    volumes:
+
+      # Mount the XWindows inter-process communication socket to allow
+      # GUI communication between host and container.
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+      # Share XWindows credentials for authentication of X sessions.
+      # Thus, the container has the same GUI displaying permissions as the host.
+      - '${HOME}/.Xauthority:/root/.Xauthority:rw'
+
+    # Place the container directly in the host’s networking address space.
+    network_mode: host
+
+    # Forwards stdin to apps bash, stops the app from closing immediately
+    stdin_open: true
+    tty: true
+
+    # Exposes an ssh port to allow IDEs to connect to the container
+    ports:
+      - "2222:22"
+
+    # Enables debugging at the system level. ptrace is a system call that
+    # provides a means by which one process (the “tracer”) may observe and
+    # control the execution of another process (the “tracee”).
+    cap_add:
+      - "sys_ptrace"
