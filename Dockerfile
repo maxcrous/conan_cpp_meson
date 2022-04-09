@@ -36,6 +36,7 @@ RUN conan install -g pkg_config implot/0.13@
 ARG PKG_CONFIG_PATH=${HOME_DIR}
 
 # Use git to fetch the meson build script 
+RUN echo "hello"
 RUN git clone https://github.com/maxcrous/conan_cpp_meson.git
 
 # Run the build commands
