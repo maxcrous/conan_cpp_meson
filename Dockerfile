@@ -30,13 +30,13 @@ WORKDIR ${HOME_DIR}
 
 # Install C++ libraries through conan. Use pkg_config generator to produce .pc files.
 RUN conan install -g pkg_config opencv/4.5.5@
-RUN conan install -g pkg_config implot/0.13@
+RUN conan install -g pkg_config implot/0.12@
 
 # Set the the pkg_config .pc files search path to the current directory.
 ARG PKG_CONFIG_PATH=${HOME_DIR}
 
 # Use git to fetch the meson build script 
-RUN echo "hello"
+RUN echo "hello stoper"
 RUN git clone https://github.com/maxcrous/conan_cpp_meson.git
 
 # Run the build commands
