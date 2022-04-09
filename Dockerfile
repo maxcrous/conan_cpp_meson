@@ -21,12 +21,16 @@ ARG CONAN_SYSREQUIRES_MODE=enabled
 RUN conan profile new default --detect && \
     conan profile update settings.compiler.libcxx=libstdc++11 default
 
+# May need to set this to install all required conan packages, check
+# RUN conan config set general.revisions_enabled=1
+
 # Set working directory 
 ENV HOME_DIR /home/develop
 WORKDIR ${HOME_DIR}
 
 # Install C++ libraries through conan. Use pkg_config generator to produce .pc files.
 RUN conan install -g pkg_config opencv/4.5.5@
+RUN conan install -g pkg_config implot/0.13@
 
 # Set the the pkg_config .pc files search path to the current directory.
 ARG PKG_CONFIG_PATH=${HOME_DIR}
