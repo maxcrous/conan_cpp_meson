@@ -30,7 +30,7 @@ WORKDIR ${HOME_DIR}
 
 # Install C++ libraries through conan. Use pkg_config generator to produce .pc files.
 RUN conan install -g pkg_config opencv/4.5.5@
-RUN conan install -g pkg_config implot/0.12@
+RUN conan install -g pkg_config imgui/1.87@
 
 # Set the the pkg_config .pc files search path to the current directory.
 ARG PKG_CONFIG_PATH=${HOME_DIR}
