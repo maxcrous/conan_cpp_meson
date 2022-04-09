@@ -6,7 +6,7 @@ using namespace cv;
 int main(int argc, char** argv )
 {
     Mat image;
-    image = imread("car.jpg", IMREAD_COLOR);
+    image = imread("../car.jpg", IMREAD_COLOR);
 
     if ( !image.data )
     {

@@ -1,30 +1,34 @@
-FROM ubuntu:20.04
+# Use ubuntu as base image
+FROM ubuntu:latest
 
+# Ensure debconf does not show interactive installer                   
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
+# Install system packages
 RUN set -ex && \
     apt-get update && \
     apt-get install -y \
     python3 pip sudo git 
 
-# Makes debconf install without displaying an interactive menu
-ARG DEBIAN_FRONTEND=noninteractive
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-
+# Install python packages
 RUN pip install meson conan ninja
 
-# Makes conan install all system dependencies automatically 
+# Makes conan install non-library dependencies (system dependencies) automatically as well
 ARG CONAN_SYSREQUIRES_MODE=enabled
 
-# Makes conan enable C++11 library linking  
+# Configures conan to use the C++11 standard library implementation.
+# Without this, some libraries like OpenCV do not compile.
 RUN conan profile new default --detect && \
     conan profile update settings.compiler.libcxx=libstdc++11 default
 
-
+# Set working directory 
 ENV HOME_DIR /home/develop
 WORKDIR ${HOME_DIR}
 
-# Install opencv through conan and store pkg-config files in local directory 
+# Install C++ libraries through conan. Use pkg_config generator to produce .pc files.
 RUN conan install -g pkg_config opencv/4.5.5@
+
+# Set the the pkg_config .pc files search path to the current directory.
 ARG PKG_CONFIG_PATH=${HOME_DIR}
 
 # Use git to fetch the meson build script 
