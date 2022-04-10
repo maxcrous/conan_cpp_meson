@@ -8,10 +8,10 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 RUN set -ex && \
     apt-get update && \
     apt-get install -y \
-    python3 pip sudo git 
+    python3 pip sudo git
 
 # Install python packages
-RUN pip install meson conan ninja
+RUN pip install meson conan ninja 
 
 # Makes conan install non-library dependencies (system dependencies) automatically as well
 ARG CONAN_SYSREQUIRES_MODE=enabled
@@ -28,18 +28,21 @@ RUN conan profile new default --detect && \
 ENV HOME_DIR /home/develop
 WORKDIR ${HOME_DIR}
 
+#RUN git clone https://github.com/maxcrous/conan_cpp_meson.git
+ADD . /home/develop/conan_cpp_meson
+ 
 # Install C++ libraries through conan. Use pkg_config generator to produce .pc files.
-RUN conan install -g pkg_config opencv/4.5.5@
-RUN conan install -g pkg_config imgui/1.87@
+#RUN conan install -g pkg_config opencv/4.5.5@
+#RUN conan install -g pkg_config imgui/1.87@
 
-# Set the the pkg_config .pc files search path to the current directory.
-ARG PKG_CONFIG_PATH=${HOME_DIR}
-
-# Use git to fetch the meson build script 
-RUN echo "hello stoper"
-RUN git clone https://github.com/maxcrous/conan_cpp_meson.git
-
-# Run the build commands
 WORKDIR conan_cpp_meson
+RUN conan install conanfile.txt
+
+# Replace the " with \" in the imgui pkg-config file (imgui.pc) 
+# Otherwise pkg-config misinterprets the " in the compiler option -DIMGUI_USER_CONFIG="imgui_user_config.h"
+RUN sed -i 's/\"imgui_user_config.h\"/\\"imgui_user_config.h\\"/' imgui.pc
+
+# Conan placed all pc files in the current directory, so use it as path for pkg-config
+ENV PKG_CONFIG_PATH /home/develop/conan_cpp_meson
 RUN meson build
-RUN ninja -C build
+RUN ninja -C build 

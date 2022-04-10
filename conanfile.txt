@@ -1,0 +1,16 @@
+[requires]
+opencv/4.5.5@
+imgui/1.87@
+glfw/3.3.6@
+glew/2.2.0@
+
+[generators]
+pkg_config
+
+[imports]
+./res/bindings, imgui_impl_glfw.cpp -> .
+./res/bindings, imgui_impl_opengl3.cpp -> .
+./res/bindings, imgui_impl_glfw.h -> .
+./res/bindings, imgui_impl_opengl3.h -> .
+./res/bindings, imgui_impl_opengl3_loader.h -> .
+

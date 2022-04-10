@@ -22,9 +22,12 @@ services:
       # Forward XWindows display env variable. A kind of host's display IP address.
       - DISPLAY=:0
 
+      # Set the the pkg_config .pc files search path to the current directory.
+      - PKG_CONFIG_PATH=/home/develop/conan_cpp_meson/
+
     # Mount host files in the Docker container
     volumes:
-
+     
       # Mount the XWindows inter-process communication socket to allow
       # GUI communication between host and container.
       - /tmp/.X11-unix:/tmp/.X11-unix  
